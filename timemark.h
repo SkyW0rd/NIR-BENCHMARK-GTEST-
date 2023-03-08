@@ -11,14 +11,14 @@ class timemark
 {
 public:
 	timemark();
-	//			SUM IPP
+	//			ADD IPP
 	void ippAdd_32f_Bench(benchmark::State&);
 	void ippAdd_32f_I_Bench(benchmark::State&);
 	void ippAddC_32fc_Bench(benchmark::State&);
 	void ippAddC_32fc_I_Bench(benchmark::State&);
 	void ippAdd_16s32f_Bench(benchmark::State&);
 
-	//			SUM FAKE IPP
+	//			ADD FAKE IPP
 	void asmAdd_32f_Bench(benchmark::State&);
 	void asmAdd_32f_I_Bench(benchmark::State&);
 	void asmAddC_32fc_Bench(benchmark::State&);

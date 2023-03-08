@@ -1043,7 +1043,7 @@ AsmStatus asmCopy_32f(const Asm32f* pSrc, Asm32f* pDst, int len)
     {
         _mm_storer_ps(&pDst[i], _mm_set_ps(pSrc[i], pSrc[i + 1], pSrc[i + 2], pSrc[i + 3]));
     }
-    printf("%d", i);
+    //printf("%d", i);
     for (i; i < len; ++i)
     {
         pDst[i] = pSrc[i];
@@ -1607,7 +1607,7 @@ AsmStatus asmFFTFwd_CToC_32fc_I(Asm32fc* pSrcDst, AsmFFTSpec_C_32fc* pFFTSpec, A
     (*pFFTSpec).buf_size *= 2;
     if ((*pFFTSpec).buf_size == (*pFFTSpec).size && (*pFFTSpec).flag != ASM_FFT_NODIV_BY_ANY)
     {
-        std::cout << "Separate 32:" << (*pFFTSpec).size << std::endl;
+        //std::cout << "Separate 32:" << (*pFFTSpec).size << std::endl;
         int div = (*pFFTSpec).divider, i = 0;
         for (i; i < (*pFFTSpec).size; i += 4)
         {
@@ -1708,7 +1708,7 @@ AsmStatus asmFFTInv_CToC_32fc_I(Asm32fc* pSrcDst, AsmFFTSpec_C_32fc* pFFTSpec, A
     (*pFFTSpec).buf_size *= 2;
     if ((*pFFTSpec).buf_size == (*pFFTSpec).size && (*pFFTSpec).flag != ASM_FFT_NODIV_BY_ANY)
     {
-        std::cout << "Separate 32:" << (*pFFTSpec).size << std::endl;
+        //std::cout << "Separate 32:" << (*pFFTSpec).size << std::endl;
         int div = (*pFFTSpec).inv_divider, i = 0;
         for (i; i < (*pFFTSpec).size; i += 4)
         {

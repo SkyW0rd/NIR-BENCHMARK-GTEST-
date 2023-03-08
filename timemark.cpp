@@ -77,6 +77,10 @@ timemark::timemark()
 		ipp_16sc[i].re = 4 + i % 16;
 		ipp_16sc[i].im = 7 + i % 16;
 		ipp_16u1[i] = 3 + i % 17;
+		ipp_bufComp[i] = 0;
+		ipp_bufc[i].im = 0;
+		ipp_bufc[i].re = 0;
+		ipp_bufComp[i] = 0;
 		//			FAKE_ADD
 		asm_comp[i].re = sin(3.14 * i);
 		asm_comp[i].im = cos(3.14 * i);
@@ -90,6 +94,10 @@ timemark::timemark()
 		asm_16sc[i].re = 4 + i % 16;
 		asm_16sc[i].im = 7 + i % 16;
 		asm_16u1[i] = 3 + i % 17;
+		asm_bufComp[i] = 0;
+		asm_bufc[i].im = 0;
+		asm_bufc[i].re = 0;
+		asm_bufComp[i] = 0;
 	}
 }
 
