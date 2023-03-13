@@ -4,9 +4,7 @@ timemark::timemark()
 	len = 1600000;
 	order = 10;
 	scaleFactor = 0;
-	pSpecSize = new int[len];
-	pSpecBufferSize = new int[len];
-	pBufferSize = new int[len];
+	lenFFT = 1048576;
 	//          IPP_INIT
 	ipp_comp = new Ipp32fc[len];
 	ipp_dstc = new Ipp32fc[len];
@@ -20,14 +18,12 @@ timemark::timemark()
 	ipp_16s1 = new Ipp16s[len];
 	ipp_16s2 = new Ipp16s[len];
 	ipp_16sc = new Ipp16sc[len];
-	ipp_pIndex = new int[len];
 	ipp_bufComp64 = new Ipp64f[len];
 	ipp_16u1 = new Ipp16u[len];
-	ipp_pSpec = new Ipp8u[len];
-	ipp_pSpecBuffer = new Ipp8u[len];
-	ipp_pBuf = new Ipp8u[len];
-	//ipp_pFFTSpec = new IppsFFTSpec_C_32fc[len];
 	ipp_ppFFTSpec = new IppsFFTSpec_C_32fc*;
+	ipp_pSpecSize = 0;
+	ipp_pSpecBufferSize = 0;
+	ipp_pBufferSize = 0;
 	//          FAKE_INITD
 	asm_comp = new Asm32fc[len];
 	asm_dstc = new Asm32fc[len];
@@ -41,27 +37,28 @@ timemark::timemark()
 	asm_16s1 = new Asm16s[len];
 	asm_16s2 = new Asm16s[len];
 	asm_16sc = new Asm16sc[len];
-	asm_pIndex = new int[len];
 	asm_bufComp64 = new Asm64f[len];
 	asm_16u1 = new Asm16u[len];
-	asm_pSpec = new Ipp8u[len];
-	asm_pSpecBuffer = new Ipp8u[len];
-	asm_pBuf = new Ipp8u[len];
-	asm_pFFTSpec = new AsmFFTSpec_C_32fc[len];
 	asm_ppFFTSpec = new AsmFFTSpec_C_32fc*;
+	asm_pSpecSize = 0;
+	asm_pSpecBufferSize = 0;
+	asm_pBufferSize = 0;
 	//          IPP_CONST_INIT
 	ipp_val_c = { 3.13931f, 7.1963f };
 	ipp_val = { 3.213141f };
-	ipp_val16s = { 'a' };
+	ipp_val16s = { 7 };
 	ipp_val64 = { 5.749234f };
+	ipp_pIndex = { 2 };
 	ipp_hint = ippAlgHintNone;
 	ipp_rndMode = ippRndNear;
 	//          FAKE_CONST_INIT
 	asm_val_c = { 3.13931f, 7.1963f };
 	asm_val = { 3.213141f };
-	asm_val16s = { 'a' };
+	asm_val16s = { 7 };
 	asm_val64 = { 5.749234f };
+	asm_pIndex = { 2 };
 	asm_rndMode = asmRndNear;
+	asm_hint = AlgHintNone;
 	for (int i = 0; i < len; i++)
 	{
 		//          IPP_ADD
@@ -72,6 +69,8 @@ timemark::timemark()
 		ipp_vec2[i] = cos(3.14 * i / len) + i % 1220;
 		ipp_vec3[i] = sin(3.14 * i / len) / cos(3.14 * i / len) + i % 1220;
 		ipp_dst[i] = -1 * i / 4 * 4.0f;
+		ipp_dstc[i].re = 4 + i % 16;
+		ipp_dstc[i].im = 7 + i % 16;
 		ipp_16s1[i] = 4 + i % 16;
 		ipp_16s2[i] = 4;
 		ipp_16sc[i].re = 4 + i % 16;
@@ -89,6 +88,8 @@ timemark::timemark()
 		asm_vec2[i] = cos(3.14 * i / len) + i % 1220;
 		asm_vec3[i] = sin(3.14 * i / len) / cos(3.14 * i / len) + i % 1220;
 		asm_dst[i] = -1 * i / 4 * 4.0f;
+		asm_dstc[i].re = 4 + i % 16;
+		asm_dstc[i].im = 7 + i % 16;
 		asm_16s1[i] = 4 + i % 16;
 		asm_16s2[i] = 4;
 		asm_16sc[i].re = 4 + i % 16;
@@ -99,6 +100,18 @@ timemark::timemark()
 		asm_bufc[i].re = 0;
 		asm_bufComp[i] = 0;
 	}
+	ippsFFTGetSize_C_32fc(order, IPP_FFT_DIV_INV_BY_N, ippAlgHintNone, &ipp_pSpecSize, &ipp_pSpecBufferSize, &ipp_pBufferSize);
+	asmFFTGetSize_C_32fc(order, ASM_FFT_DIV_INV_BY_N, AsmHintAlgorithm::AlgHintNone, &asm_pSpecSize, &asm_pSpecBufferSize, &asm_pBufferSize);
+	//			FFT IPP INIT
+	ipp_pSpec = new Ipp8u[ipp_pSpecSize];
+	ipp_pSpecBuffer = (ipp_pSpecBufferSize > 0) ? new Ipp8u[ipp_pSpecBufferSize] : NULL;
+	ipp_pBuf = new Ipp8u[ipp_pBufferSize];
+	//			FFT FAKE IPP INIT
+	asm_pSpec = new Ipp8u[asm_pSpecSize];
+	asm_pSpecBuffer = (asm_pSpecBufferSize > 0) ? new Ipp8u[asm_pSpecBufferSize] : NULL;
+	asm_pBuf = new Ipp8u[asm_pBufferSize];
+	ippsFFTInit_C_32fc(ipp_ppFFTSpec, order, IPP_FFT_DIV_INV_BY_N, ippAlgHintNone, ipp_pSpec, ipp_pSpecBuffer);
+	asmFFTInit_C_32fc(asm_ppFFTSpec, order, IPP_FFT_DIV_INV_BY_N, AsmHintAlgorithm::AlgHintNone, asm_pSpec, asm_pSpecBuffer);
 }
 
 //					ADD IPP
@@ -236,7 +249,7 @@ void timemark::ippMul_32f_I_Bench(benchmark::State& state)
 {
 	while (state.KeepRunning())
 	{
-		benchmark::DoNotOptimize(ippsMul_32f_I(ipp_vec1,ipp_dst,len));
+		benchmark::DoNotOptimize(ippsMul_32f_I(ipp_vec1, ipp_dst, len));
 	}
 }
 
@@ -332,7 +345,7 @@ void timemark::asmDivC_32f_I_Bench(benchmark::State& state)
 {
 	while (state.KeepRunning())
 	{
-		benchmark::DoNotOptimize(asmDivC_32f_I(asm_val, asm_vec1,len));
+		benchmark::DoNotOptimize(asmDivC_32f_I(asm_val, asm_vec1, len));
 	}
 }
 //			SQRT IPP
@@ -372,7 +385,7 @@ void timemark::ippMax_32f_Bench(benchmark::State& state)
 {
 	while (state.KeepRunning())
 	{
-		benchmark::DoNotOptimize(ippsMax_32f(ipp_vec1, len, ipp_vec2));
+		benchmark::DoNotOptimize(ippsMax_32f(ipp_vec1, len, &ipp_maxC));
 	}
 }
 void timemark::ippMaxEvery_32f_I_Bench(benchmark::State& state)
@@ -386,7 +399,7 @@ void timemark::ippMaxIndx_32f_Bench(benchmark::State& state)
 {
 	while (state.KeepRunning())
 	{
-		benchmark::DoNotOptimize(ippsMaxIndx_32f(ipp_vec1, len, ipp_bufComp, ipp_pIndex));
+		benchmark::DoNotOptimize(ippsMaxIndx_32f(ipp_vec1, len, &ipp_maxC, &ipp_pIndex));
 	}
 }
 //			MAX FAKE IPP
@@ -394,7 +407,7 @@ void timemark::asmMax_32f_Bench(benchmark::State& state)
 {
 	while (state.KeepRunning())
 	{
-		benchmark::DoNotOptimize(asmMax_32f(asm_vec1, len, asm_vec2));
+		benchmark::DoNotOptimize(asmMax_32f(asm_vec1, len, &asm_maxC));
 	}
 }
 void timemark::asmMaxEvery_32f_I_Bench(benchmark::State& state)
@@ -408,7 +421,7 @@ void timemark::asmMaxIndx_32f_Bench(benchmark::State& state)
 {
 	while (state.KeepRunning())
 	{
-		benchmark::DoNotOptimize(asmMaxIndx_32f(asm_vec1, len, asm_bufComp, asm_pIndex));
+		benchmark::DoNotOptimize(asmMaxIndx_32f(asm_vec1, len, &asm_maxC, &asm_pIndex));
 	}
 }
 //			ZERO IPP
@@ -492,14 +505,14 @@ void timemark::ippSum_32f_Bench(benchmark::State& state)
 {
 	while (state.KeepRunning())
 	{
-		benchmark::DoNotOptimize(ippsSum_32f(ipp_vec1, len, ipp_dst, ipp_hint));
+		benchmark::DoNotOptimize(ippsSum_32f(ipp_vec1, len, &ipp_sumf, ipp_hint));
 	}
 }
 void timemark::ippSum_32fc_Bench(benchmark::State& state)
 {
 	while (state.KeepRunning())
 	{
-		benchmark::DoNotOptimize(ippsSum_32fc(ipp_comp, len, ipp_dstc,ipp_hint));
+		benchmark::DoNotOptimize(ippsSum_32fc(ipp_comp, len, &ipp_sumfc, ipp_hint));
 	}
 }
 //			SUM FAKE IPP
@@ -507,14 +520,14 @@ void timemark::asmSum_32f_Bench(benchmark::State& state)
 {
 	while (state.KeepRunning())
 	{
-		benchmark::DoNotOptimize(asmSum_32f(asm_vec1, len, asm_dst));
+		benchmark::DoNotOptimize(asmSum_32f(asm_vec1, len, &asm_sumf, asm_hint));
 	}
 }
 void timemark::asmSum_32fc_Bench(benchmark::State& state)
 {
 	while (state.KeepRunning())
 	{
-		benchmark::DoNotOptimize(asmSum_32fc(asm_comp, len, asm_dstc));
+		benchmark::DoNotOptimize(asmSum_32fc(asm_comp, len, &asm_sumfc, asm_hint));
 	}
 }
 //			ABS IPP
@@ -538,7 +551,7 @@ void timemark::ippRealToCplx_32f_Bench(benchmark::State& state)
 {
 	while (state.KeepRunning())
 	{
-		benchmark::DoNotOptimize(ippsRealToCplx_32f(ipp_vec1,ipp_vec2, ipp_comp, len));
+		benchmark::DoNotOptimize(ippsRealToCplx_32f(ipp_vec1, ipp_vec2, ipp_comp, len));
 	}
 }
 void timemark::ippCplxToReal_16sc_Bench(benchmark::State& state)
@@ -575,7 +588,7 @@ void timemark::ippConvert_32f16u_Sfs_Bench(benchmark::State& state)
 {
 	while (state.KeepRunning())
 	{
-		benchmark::DoNotOptimize(ippsConvert_32f16u_Sfs(ipp_vec1, ipp_16u1,len, ipp_rndMode, scaleFactor));
+		benchmark::DoNotOptimize(ippsConvert_32f16u_Sfs(ipp_vec1, ipp_16u1, len, ipp_rndMode, scaleFactor));
 	}
 }
 void timemark::ippConvert_32f16s_Sfs_Bench(benchmark::State& state)
@@ -672,7 +685,7 @@ void timemark::ippMean_32f_Bench(benchmark::State& state)
 {
 	while (state.KeepRunning())
 	{
-		benchmark::DoNotOptimize(ippsMean_32f(ipp_vec1, len, ipp_dst, ipp_hint));
+		benchmark::DoNotOptimize(ippsMean_32f(ipp_vec1, len, &ipp_mean, ipp_hint));
 	}
 }
 //			MEAN FAKE IPP
@@ -680,7 +693,7 @@ void timemark::asmMean_32f_Bench(benchmark::State& state)
 {
 	while (state.KeepRunning())
 	{
-		benchmark::DoNotOptimize(asmMean_32f(asm_vec1, len, asm_dst));
+		benchmark::DoNotOptimize(asmMean_32f(asm_vec1, len, &asm_mean, asm_hint));
 	}
 }
 //			MAGNITUDE IPP
@@ -710,7 +723,7 @@ void timemark::asmMagnitude_32fc_Bench(benchmark::State& state)
 {
 	while (state.KeepRunning())
 	{
-		benchmark::DoNotOptimize(asmMagnitude_32fc(asm_comp,asm_vec1, len));
+		benchmark::DoNotOptimize(asmMagnitude_32fc(asm_comp, asm_vec1, len));
 	}
 }
 void timemark::asmMagnitude_32f_Bench(benchmark::State& state)
@@ -732,14 +745,14 @@ void timemark::ippDotProd_32f_Bench(benchmark::State& state)
 {
 	while (state.KeepRunning())
 	{
-		benchmark::DoNotOptimize(ippsDotProd_32f(ipp_vec1, ipp_dst, len, ipp_bufComp));
+		benchmark::DoNotOptimize(ippsDotProd_32f(ipp_vec1, ipp_dst, len, &ipp_dotProdf));
 	}
 }
 void timemark::ippDotProd_32fc_Bench(benchmark::State& state)
 {
 	while (state.KeepRunning())
 	{
-		benchmark::DoNotOptimize(ippsDotProd_32fc(ipp_comp, ipp_dstc, len, ipp_bufc));
+		benchmark::DoNotOptimize(ippsDotProd_32fc(ipp_comp, ipp_dstc, len, &ipp_dotProdfc));
 	}
 }
 //			PROD FAKE IPP
@@ -747,14 +760,14 @@ void timemark::asmDotProd_32f_Bench(benchmark::State& state) // netochnost`
 {
 	while (state.KeepRunning())
 	{
-		benchmark::DoNotOptimize(asmDotProd_32f(asm_vec1, asm_dst, len, asm_bufComp));
+		benchmark::DoNotOptimize(asmDotProd_32f(asm_vec1, asm_dst, len, &asm_dotProdf));
 	}
 }
 void timemark::asmDotProd_32fc_Bench(benchmark::State& state)
 {
 	while (state.KeepRunning())
 	{
-		benchmark::DoNotOptimize(asmDotProd_32fc(asm_comp, asm_dstc, len, asm_bufc));
+		benchmark::DoNotOptimize(asmDotProd_32fc(asm_comp, asm_dstc, len, &asm_dotProdfc));
 	}
 }
 //			POLAR IPP
@@ -799,7 +812,7 @@ void timemark::ippFFTGetSize_C_32fc_Bench(benchmark::State& state)
 {
 	while (state.KeepRunning())
 	{
-		benchmark::DoNotOptimize(ippsFFTGetSize_C_32fc(order, IPP_FFT_DIV_INV_BY_N, ipp_hint, pSpecSize, pSpecBufferSize, pBufferSize));
+		benchmark::DoNotOptimize(ippsFFTGetSize_C_32fc(order, IPP_FFT_DIV_INV_BY_N, ipp_hint, &ipp_pSpecSize, &ipp_pSpecBufferSize, &ipp_pBufferSize));
 	}
 }
 
@@ -807,14 +820,14 @@ void timemark::ippFFTFwd_CToC_32fc_I_Bench(benchmark::State& state)
 {
 	while (state.KeepRunning())
 	{
-		benchmark::DoNotOptimize(ippsFFTFwd_CToC_32fc_I(ipp_dstc, ipp_pFFTSpec, ipp_pBuf));
+		benchmark::DoNotOptimize(ippsFFTFwd_CToC_32fc_I(ipp_dstc, *ipp_ppFFTSpec, ipp_pBuf));
 	}
 }
 void timemark::ippFFTInv_CToC_32fc_I_Bench(benchmark::State& state)
 {
 	while (state.KeepRunning())
 	{
-		benchmark::DoNotOptimize(ippsFFTInv_CToC_32fc_I(ipp_dstc, ipp_pFFTSpec, ipp_pBuf));
+		benchmark::DoNotOptimize(ippsFFTInv_CToC_32fc_I(ipp_dstc, *ipp_ppFFTSpec, ipp_pBuf));
 	}
 }
 //			FFT FAKE IPP
@@ -829,7 +842,7 @@ void timemark::asmFFTGetSize_C_32fc_Bench(benchmark::State& state)
 {
 	while (state.KeepRunning())
 	{
-		benchmark::DoNotOptimize(asmFFTGetSize_C_32fc(order, ASM_FFT_DIV_INV_BY_N, asm_hint, pSpecSize, pSpecBufferSize, pBufferSize));
+		benchmark::DoNotOptimize(asmFFTGetSize_C_32fc(order, ASM_FFT_DIV_INV_BY_N, asm_hint, &asm_pSpecSize, &asm_pSpecBufferSize, &asm_pBufferSize));
 	}
 }
 
@@ -837,14 +850,14 @@ void timemark::asmFFTFwd_CToC_32fc_I_Bench(benchmark::State& state)
 {
 	while (state.KeepRunning())
 	{
-		benchmark::DoNotOptimize(asmFFTFwd_CToC_32fc_I(asm_dstc, asm_pFFTSpec, asm_pBuf));
+		benchmark::DoNotOptimize(asmFFTFwd_CToC_32fc_I(asm_dstc, *asm_ppFFTSpec, asm_pBuf));
 	}
 }
 void timemark::asmFFTInv_CToC_32fc_I_Bench(benchmark::State& state)
 {
 	while (state.KeepRunning())
 	{
-		benchmark::DoNotOptimize(asmFFTInv_CToC_32fc_I(asm_dstc, asm_pFFTSpec, asm_pBuf));
+		benchmark::DoNotOptimize(asmFFTInv_CToC_32fc_I(asm_dstc, *asm_ppFFTSpec, asm_pBuf));
 	}
 }
 //			POWER IPP
@@ -924,13 +937,11 @@ timemark::~timemark()
 	delete[] ipp_16s1;
 	delete[] ipp_16s2;
 	delete[] ipp_16sc;
-	delete[] ipp_pIndex;
 	delete[] ipp_bufComp64;
 	delete[] ipp_16u1;
 	delete[] ipp_pSpec;
 	delete[] ipp_pSpecBuffer;
 	delete[] ipp_pBuf;
-	delete[] ipp_pFFTSpec;
 	delete[] ipp_ppFFTSpec;
 	//			DELETE FAKE IPP
 	delete[] asm_comp;
@@ -945,12 +956,10 @@ timemark::~timemark()
 	delete[] asm_16s1;
 	delete[] asm_16s2;
 	delete[] asm_16sc;
-	delete[] asm_pIndex;
 	delete[] asm_bufComp64;
 	delete[] asm_16u1;
 	delete[] asm_pSpec;
 	delete[] asm_pSpecBuffer;
 	delete[] asm_pBuf;
-	delete[] asm_pFFTSpec;
 	delete[] asm_ppFFTSpec;
 }

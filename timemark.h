@@ -177,9 +177,7 @@ public:
 	int len;
 	int order;
 	int scaleFactor;
-	int* pSpecSize;
-	int* pSpecBufferSize;
-	int* pBufferSize;
+	int lenFFT;
 	//          IPP_INIT
 	Ipp32fc* ipp_comp;
 	Ipp32fc* ipp_dstc;
@@ -193,14 +191,16 @@ public:
 	Ipp16s* ipp_16s1;
 	Ipp16s* ipp_16s2;
 	Ipp16sc* ipp_16sc;
-	int* ipp_pIndex;
+	int ipp_pIndex;
 	Ipp64f* ipp_bufComp64;
 	Ipp16u* ipp_16u1;
 	Ipp8u* ipp_pSpec;
 	Ipp8u* ipp_pSpecBuffer;
 	Ipp8u* ipp_pBuf;
-	IppsFFTSpec_C_32fc* ipp_pFFTSpec;
 	IppsFFTSpec_C_32fc** ipp_ppFFTSpec;
+	int ipp_pSpecSize;
+	int ipp_pSpecBufferSize;
+	int ipp_pBufferSize;
 	//          FAKE_INIT
 	Asm32fc* asm_comp;
 	Asm32fc* asm_dstc;
@@ -214,27 +214,41 @@ public:
 	Asm16s* asm_16s1;
 	Asm16s* asm_16s2;
 	Asm16sc* asm_16sc;
-	int* asm_pIndex;
+	int asm_pIndex;
 	Asm64f* asm_bufComp64;
 	Asm16u* asm_16u1;
 	Asm8u* asm_pSpec;
 	Asm8u* asm_pSpecBuffer;
 	Asm8u* asm_pBuf;
-	AsmFFTSpec_C_32fc* asm_pFFTSpec;
 	AsmFFTSpec_C_32fc** asm_ppFFTSpec;
+	int asm_pSpecSize;
+	int asm_pSpecBufferSize;
+	int asm_pBufferSize;
 	//          IPP_CONST_INIT
 	Ipp32fc ipp_val_c;
 	Ipp32f ipp_val;
+	Ipp32f ipp_maxC;
 	Ipp16s ipp_val16s;
 	Ipp64f ipp_val64;
 	IppHintAlgorithm ipp_hint;
 	IppRoundMode ipp_rndMode;
+	Ipp32f ipp_sumf;
+	Ipp32fc ipp_sumfc;
+	Ipp32f ipp_mean;
+	Ipp32f ipp_dotProdf;
+	Ipp32fc ipp_dotProdfc;
 	//          FAKE_CONST_INIT
 	Asm32fc asm_val_c;
 	Asm32f asm_val;
+	Asm32f asm_maxC;
 	Asm16s asm_val16s;
 	Asm64f asm_val64;
 	AsmHintAlgorithm asm_hint;
 	AsmRoundMode asm_rndMode;
+	Asm32f asm_sumf;
+	Asm32fc asm_sumfc;
+	Asm32f asm_mean;
+	Asm32f asm_dotProdf;
+	Asm32fc asm_dotProdfc;
 };
 #endif

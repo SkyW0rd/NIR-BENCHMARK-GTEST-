@@ -2,13 +2,13 @@
 #define INTRINIPP_H
 
 #include "defs.h"
-//#include <xmmintrin.h>
+#include <xmmintrin.h>
 #include <emmintrin.h>
 //#include <x86intrin.h>
 #include <math.h>
-//#include <nmmintrin.h>
+#include <nmmintrin.h>
 #include <smmintrin.h>
-//#include <immintrin.h>
+#include <immintrin.h>
 #include <iostream>
 
 #pragma once
@@ -17,7 +17,7 @@ AsmStatus asmAdd_32f(Asm32f* pSrc, Asm32f* pDst, Asm32f* dst, int len);
 AsmStatus asmAdd_32f_I(Asm32f* pSrc, Asm32f* pDst, int len);
 AsmStatus asmAddC_32fc(const Asm32fc* pSrc, Asm32fc val, Asm32fc* pDst, int len);
 AsmStatus asmAddC_32fc_I(Asm32fc val, Asm32fc* pSrcDst, int len);
-/*TEST--->*/AsmStatus asmAdd_16s32f(const Asm16s* pSrc1, const Asm16s* pSrc2, Asm32f* pDst, int len);
+AsmStatus asmAdd_16s32f(const Asm16s* pSrc1, const Asm16s* pSrc2, Asm32f* pDst, int len);
 
 // вычитание
 AsmStatus asmSub_32f(Asm32f* pSrc1, Asm32f* pSrc2, Asm32f* dst, int len);
@@ -28,10 +28,10 @@ AsmStatus asmSubC_32f_I(Asm32f value, Asm32f* pDst, int len);
 AsmStatus asmMulC_32f_I(Asm32f val, Asm32f* array, int len);
 AsmStatus asmMul_32f(Asm32f* pSrc, Asm32f* pDst, Asm32f* dst, int len);
 AsmStatus asmMul_32f_I(Asm32f* pSrc, Asm32f* pDst, int len);
+AsmStatus asmMul_32fc_I(Asm32fc* pScr, Asm32fc* pDst, int len);
 
 AsmStatus asmMulC_32fc_I(Asm32fc value, Asm32fc* pScrDst, int len);
 AsmStatus asmMulC_32fc(const Asm32fc* pSrc, Asm32fc value, Asm32fc* pDst, int len);
-AsmStatus asmMul_32fc_I(Asm32fc* pScr, Asm32fc* pDst, int len);
 AsmStatus asmMulC_16s_I(Asm16s val, Asm16s* pSrcDst, int len);
 
 // деление
@@ -60,9 +60,8 @@ AsmStatus asmSet_64f(Asm64f value, Asm64f* vec, int len);
 
 
 // подсчет суммы
-AsmStatus asmSum_32f(Asm32f* vec, int len, Asm32f* dst);
-AsmStatus asmSum_32fc(Asm32fc* vec, int len, Asm32fc* dst);
-
+AsmStatus asmSum_32f(Asm32f* vec, int len, Asm32f* dst, AsmHintAlgorithm hint);
+AsmStatus asmSum_32fc(Asm32fc* vec, int len, Asm32fc* dst, AsmHintAlgorithm hint);
 
 // модуль
 /*REDO WITH BOTTOM NOTES*/AsmStatus asmAbs_32f_I(Asm32f* pSrcDst, int len);
@@ -72,6 +71,7 @@ AsmStatus asmRealToCplx_32f(const Asm32f* pSrcRe, const Asm32f* pSrcIm, Asm32fc*
 AsmStatus asmCplxToReal_16sc(const Asm16sc* pSrc, Asm16s* pDstRe, Asm16s* pDstIm, int len);
 
 // преобразовани€ типов
+/*—ƒ≈Ћј“№ „≈–≈« ƒ–”√”ё «јѕ»—№ ¬ ѕјћя“№*/
 AsmStatus asmConvert_16s32f(const Asm16s* pSrc, Asm32f* pDst, int len); //преобразует signed short в float
 AsmStatus asmConvert_32f16u_Sfs(const Asm32f* pSrc, Asm16u* pDst, int len, AsmRoundMode rndMode, int scaleFactor); //- преобразует float в unsigned short
 AsmStatus asmConvert_32f16s_Sfs(const Asm32f* pSrc, Asm16s* pDst, int len, AsmRoundMode rndMode, int scaleFactor);// - преобразует float в signed short
@@ -85,12 +85,12 @@ AsmStatus asmConj_32fc(const Asm32fc* pSrc, Asm32fc* pDst, int len);
 AsmStatus asmConj_32fc_I(Asm32fc* pSrcDst, int len);
 
 // среднее значение
-AsmStatus asmMean_32f(Asm32f* pSrc, int len, Asm32f* pMean);
+AsmStatus asmMean_32f(Asm32f* pSrc, int len, Asm32f* pMean, AsmHintAlgorithm hint);
 
 // подсчет длины комплексного числа (магнитуды)
 AsmStatus asmMagnitude_32fc(const Asm32fc* pSrc, Asm32f* pDst, int len);
 AsmStatus asmMagnitude_32f(const Asm32f* pSrcRe, const Asm32f* pSrcIm, Asm32f* pDst, int len);
-AsmStatus asmMagnitude_16sc32f(const Asm16sc* pSrc, Asm32f* pDst, int len);
+AsmStatus asmMagnitude_16sc32f(const Asm16sc* pSrc, Asm32f* pDst, int len);/*—ƒ≈Ћј“№ „≈–≈« ƒ–”√”ё «јѕ»—№ ¬ ѕјћя“№*/
 
 // скал€рное произведение
 /*неточность на при наличие знаков после зап€той*/AsmStatus asmDotProd_32f(const Asm32f* pSrc1, const Asm32f* pSrc2, int len, Asm32f* pDp);
@@ -102,13 +102,16 @@ AsmStatus asmPolarToCart_32f(const Asm32f* pSrcMagn, const Asm32f* pSrcPhase, As
 // преобразует пол€рные координаты в пару декартовых координат в виде(X + iY)
 AsmStatus asmPolarToCart_32fc(const Asm32f* pSrcMagn, const Asm32f* pSrcPhase, Asm32fc* pDst, int len);
 
-// Ѕѕ‘
 inline int separate(Asm32fc* a, int n);
+int separate64(Asm64fc* a, int n);
 AsmStatus asmFFTInit_C_32fc(AsmFFTSpec_C_32fc** ppFFTSpec, int order, int flag, AsmHintAlgorithm hint, Asm8u* pSpec, Asm8u* pSpecBuffer);
 AsmStatus asmFFTGetSize_C_32fc(int order, int flag, /*HintAlgorithm*/int hint, int* pSpecSize, int* pSpecBufferSize, int* pBufferSize);
 
 AsmStatus asmFFTFwd_CToC_32fc_I(Asm32fc* pSrcDst, AsmFFTSpec_C_32fc* pFFTSpec, Asm8u* pBuffer); //(ЅЌ‘)
+AsmStatus asmFFTFwd_CToC_64fc_I(Asm64fc* pSrcDst, AsmFFTSpec_C_32fc* pFFTSpec, Asm8u* pBuffer);
 AsmStatus asmFFTInv_CToC_32fc_I(Asm32fc* pSrcDst, AsmFFTSpec_C_32fc* pFFTSpec, Asm8u* pBuffer); //(ќбратное Ѕѕ‘)
+
+AsmStatus FFFT(Asm64fc* pSrcDst, int N);
 
 //Computes sizes of the FFT specification structure and required working buffers
 
