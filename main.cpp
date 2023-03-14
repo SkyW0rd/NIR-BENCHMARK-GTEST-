@@ -2,7 +2,7 @@
 //#include <iostream>
 //#include <gtest/gtest.h>
 //#include <benchmark/benchmark.h>
-const double eps = 0.1;
+const double eps = 0.03126;
 timemark* tm = new timemark();
 //TEST(Test, nameTest)
 //{
@@ -496,18 +496,33 @@ void ippConvert_16s32f_B(benchmark::State& state)
         tm->ippConvert_16s32f_Bench(state);
     }
 }
-void ippConvert_32f16u_Sfs_B(benchmark::State& state)
+void ippConvert_32f16u_Sfs_N(benchmark::State& state)
 {
     if (state.KeepRunning())
     {
-        tm->ippConvert_32f16u_Sfs_Bench(state);
+        tm->ippConvert_32f16u_Sfs_Near(state);
     }
 }
-void ippConvert_32f16s_Sfs_B(benchmark::State& state)
+void ippConvert_32f16s_Sfs_N(benchmark::State& state)
 {
     if (state.KeepRunning())
     {
-        tm->ippConvert_32f16s_Sfs_Bench(state);
+        tm->ippConvert_32f16s_Sfs_Near(state);
+    }
+}
+
+void ippConvert_32f16u_Sfs_Z(benchmark::State& state)
+{
+    if (state.KeepRunning())
+    {
+        tm->ippConvert_32f16u_Sfs_Zero(state);
+    }
+}
+void ippConvert_32f16s_Sfs_Z(benchmark::State& state)
+{
+    if (state.KeepRunning())
+    {
+        tm->ippConvert_32f16s_Sfs_Zero(state);
     }
 }
 //		CONVERT FAKE IPP
@@ -518,18 +533,33 @@ void asmConvert_16s32f_B(benchmark::State& state)
         tm->asmConvert_16s32f_Bench(state);
     }
 }
-void asmConvert_32f16u_Sfs_B(benchmark::State& state)
+void asmConvert_32f16u_Sfs_N(benchmark::State& state)
 {
     if (state.KeepRunning())
     {
-        tm->asmConvert_32f16u_Sfs_Bench(state);
+        tm->asmConvert_32f16u_Sfs_Near(state);
     }
 }
-void asmConvert_32f16s_Sfs_B(benchmark::State& state)
+void asmConvert_32f16s_Sfs_N(benchmark::State& state)
 {
     if (state.KeepRunning())
     {
-        tm->asmConvert_32f16s_Sfs_Bench(state);
+        tm->asmConvert_32f16s_Sfs_Near(state);
+    }
+}
+
+void asmConvert_32f16u_Sfs_Z(benchmark::State& state)
+{
+    if (state.KeepRunning())
+    {
+        tm->asmConvert_32f16u_Sfs_Zero(state);
+    }
+}
+void asmConvert_32f16s_Sfs_Z(benchmark::State& state)
+{
+    if (state.KeepRunning())
+    {
+        tm->asmConvert_32f16s_Sfs_Zero(state);
     }
 }
 //      COPY IPP
@@ -1154,28 +1184,47 @@ TEST(CplxTest, CplxToReal_16sc)
     }
 }
 //		CONVER TEST FUNC
-//TEST(ConverTest, Convert_16s32f)
+TEST(ConverTest, Convert_16s32f)
+{
+    ippsConvert_16s32f(tm->ipp_16s1, tm->ipp_bufComp, tm->len);
+    asmConvert_16s32f(tm->asm_16s1, tm->asm_bufComp, tm->len);
+    for (int i = 0; i < tm->len; i++)
+    {
+        ASSERT_NEAR(tm->ipp_bufComp[i], tm->asm_bufComp[i], eps);
+    }
+}
+//TEST(ConverTest, Convert_32f16u_Sfs_Near)
 //{
-//    ippsConvert_16s32f(tm->ipp_16s1, tm->ipp_bufComp, tm->len);
-//    asmConvert_16s32f(tm->asm_16s1, tm->asm_bufComp, tm->len);
-//    for (int i = 0; i < tm->len; i++)
-//    {
-//        ASSERT_NEAR(tm->ipp_bufComp[i], tm->asm_bufComp[i], eps);
-//    }
-//}
-//TEST(ConverTest, Convert_32f16u_Sfs)
-//{
-//    ippsConvert_32f16u_Sfs(tm->ipp_vec1, tm->ipp_16u1, tm->len, tm->ipp_rndMode, tm->scaleFactor);
-//    asmConvert_32f16u_Sfs(tm->asm_vec1, tm->asm_16u1, tm->len, tm->asm_rndMode, tm->scaleFactor);
+//    ippsConvert_32f16u_Sfs(tm->ipp_vec1, tm->ipp_16u1, tm->len, tm->ipp_rndModeNear, tm->scaleFactor);
+//    asmConvert_32f16u_Sfs(tm->asm_vec1, tm->asm_16u1, tm->len, tm->asm_rndModeNear, tm->scaleFactor);
 //    for (int i = 0; i < tm->len; i++)
 //    {
 //        ASSERT_NEAR(tm->ipp_16u1[i], tm->asm_16u1[i], eps);
 //    }
 //}
-//TEST(ConverTest, Convert_32f16s_Sfs)
+//TEST(ConverTest, Convert_32f16s_Sfs_Near)
 //{
-//    ippsConvert_32f16s_Sfs(tm->ipp_vec1, tm->ipp_16s1, tm->len, tm->ipp_rndMode, tm->scaleFactor);
-//    asmConvert_32f16s_Sfs(tm->asm_vec1, tm->asm_16s1, tm->len, tm->asm_rndMode, tm->scaleFactor);
+//    ippsConvert_32f16s_Sfs(tm->ipp_vec1, tm->ipp_16s1, tm->len, tm->ipp_rndModeNear, tm->scaleFactor);
+//    asmConvert_32f16s_Sfs(tm->asm_vec1, tm->asm_16s1, tm->len, tm->asm_rndModeNear, tm->scaleFactor);
+//    for (int i = 0; i < tm->len; i++)
+//    {
+//        ASSERT_NEAR(tm->ipp_16s1[i], tm->asm_16s1[i], eps);
+//    }
+//}
+// 
+//TEST(ConverTest, Convert_32f16u_Sfs_Zero)
+//{
+//    ippsConvert_32f16u_Sfs(tm->ipp_vec1, tm->ipp_16u1, tm->len, tm->ipp_rndModeZero, tm->scaleFactor);
+//    asmConvert_32f16u_Sfs(tm->asm_vec1, tm->asm_16u1, tm->len, tm->asm_rndModeZero, tm->scaleFactor);
+//    for (int i = 0; i < tm->len; i++)
+//    {
+//        ASSERT_NEAR(tm->ipp_16u1[i], tm->asm_16u1[i], eps);
+//    }
+//}
+//TEST(ConverTest, Convert_32f16s_Sfs_Zero)
+//{
+//    ippsConvert_32f16s_Sfs(tm->ipp_vec1, tm->ipp_16s1, tm->len, tm->ipp_rndModeZero, tm->scaleFactor);
+//    asmConvert_32f16s_Sfs(tm->asm_vec1, tm->asm_16s1, tm->len, tm->asm_rndModeZero, tm->scaleFactor);
 //    for (int i = 0; i < tm->len; i++)
 //    {
 //        ASSERT_NEAR(tm->ipp_16s1[i], tm->asm_16s1[i], eps);
@@ -1281,8 +1330,10 @@ TEST(ProdTest, DotProd_32f)
     //    ASSERT_EQ(tm->ipp_vec2[i], tm->asm_vec2[i]);
     //    //std::cout << tm->ipp_vec1[i] << "\t" << tm->asm_vec1[i] << std::endl;
     //}
+    //std::cout << tm->ipp_dotProdf << "\t" << tm->asm_dotProdf << std::endl;
     ippsDotProd_32f(tm->ipp_vec2, tm->ipp_vec3, tm->len, &tm->ipp_dotProdf);
     asmDotProd_32f(tm->asm_vec2, tm->asm_vec3, tm->len, &tm->asm_dotProdf);
+    //std::cout << tm->ipp_dotProdf << "\t" << tm->asm_dotProdf << std::endl;
     ASSERT_NEAR(tm->ipp_dotProdf, tm->asm_dotProdf, eps);
 }
 TEST(ProdTest, DotProd_32fc)
@@ -1293,6 +1344,8 @@ TEST(ProdTest, DotProd_32fc)
     //    ASSERT_EQ(tm->ipp_dotProd2[i].im, tm->asm_dotProd2[i].im);
     //    //std::cout << tm->ipp_vec1[i] << "\t" << tm->asm_vec1[i] << std::endl;
     //}
+    //std::cout << tm->ipp_dotProdfc.im << "\t" << tm->asm_dotProdfc.im << std::endl;
+    //std::cout << tm->ipp_dotProdfc.re << "\t" << tm->asm_dotProdfc.re << std::endl;
     ippsDotProd_32fc(tm->ipp_dotProd1, tm->ipp_dotProd2, tm->len, &tm->ipp_dotProdfc);
     asmDotProd_32fc(tm->asm_dotProd1, tm->asm_dotProd2, tm->len, &tm->asm_dotProdfc);
     ASSERT_NEAR(tm->ipp_dotProdfc.im, tm->asm_dotProdfc.im, eps);
@@ -1523,13 +1576,19 @@ BENCHMARK(asmCplxToReal_16sc_B);
 
 //		CONVER IPP
 BENCHMARK(ippConvert_16s32f_B);
-BENCHMARK(asmConvert_16s32f_B); // ошибка
+BENCHMARK(asmConvert_16s32f_B);
 
-BENCHMARK(ippConvert_32f16u_Sfs_B);
-BENCHMARK(asmConvert_32f16u_Sfs_B); // ошибка
+BENCHMARK(ippConvert_32f16u_Sfs_N);
+BENCHMARK(asmConvert_32f16u_Sfs_N);
 
-BENCHMARK(ippConvert_32f16s_Sfs_B);
-BENCHMARK(asmConvert_32f16s_Sfs_B); // ошибка
+BENCHMARK(ippConvert_32f16s_Sfs_N);
+BENCHMARK(asmConvert_32f16s_Sfs_N);
+
+BENCHMARK(ippConvert_32f16u_Sfs_Z);
+BENCHMARK(asmConvert_32f16u_Sfs_Z);
+
+BENCHMARK(ippConvert_32f16s_Sfs_Z);
+BENCHMARK(asmConvert_32f16s_Sfs_Z);
 
 //      COPY IPP
 BENCHMARK(ippCopy_32fc_B);

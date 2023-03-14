@@ -104,12 +104,18 @@ public:
 	void asmCplxToReal_16sc_Bench(benchmark::State&);
 	//		CONVER IPP
 	void ippConvert_16s32f_Bench(benchmark::State&);
-	void ippConvert_32f16u_Sfs_Bench(benchmark::State&);
-	void ippConvert_32f16s_Sfs_Bench(benchmark::State&);
+	void ippConvert_32f16u_Sfs_Near(benchmark::State&);
+	void ippConvert_32f16s_Sfs_Near(benchmark::State&);
+
+	void ippConvert_32f16u_Sfs_Zero(benchmark::State&);
+	void ippConvert_32f16s_Sfs_Zero(benchmark::State&);
 	//		CONVERT FAKE IPP
 	void asmConvert_16s32f_Bench(benchmark::State&);
-	void asmConvert_32f16u_Sfs_Bench(benchmark::State&);
-	void asmConvert_32f16s_Sfs_Bench(benchmark::State&);
+	void asmConvert_32f16u_Sfs_Near(benchmark::State&);
+	void asmConvert_32f16s_Sfs_Near(benchmark::State&);
+
+	void asmConvert_32f16u_Sfs_Zero(benchmark::State&);
+	void asmConvert_32f16s_Sfs_Zero(benchmark::State&);
 	//      COPY IPP
 	void ippCopy_32fc_Bench(benchmark::State&);
 	void ippCopy_32f_Bench(benchmark::State&);
@@ -235,7 +241,8 @@ public:
 	Ipp16s ipp_val16s;
 	Ipp64f ipp_val64;
 	IppHintAlgorithm ipp_hint;
-	IppRoundMode ipp_rndMode;
+	IppRoundMode ipp_rndModeNear;
+	IppRoundMode ipp_rndModeZero;
 	Ipp32f ipp_sumf;
 	Ipp32fc ipp_sumfc;
 	Ipp32f ipp_mean;
@@ -248,7 +255,8 @@ public:
 	Asm16s asm_val16s;
 	Asm64f asm_val64;
 	AsmHintAlgorithm asm_hint;
-	AsmRoundMode asm_rndMode;
+	AsmRoundMode asm_rndModeNear;
+	AsmRoundMode asm_rndModeZero;
 	Asm32f asm_sumf;
 	Asm32fc asm_sumfc;
 	Asm32f asm_mean;
