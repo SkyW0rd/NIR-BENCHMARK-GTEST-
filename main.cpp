@@ -1346,8 +1346,8 @@ TEST(ProdTest, DotProd_32fc)
     //}
     //std::cout << tm->ipp_dotProdfc.im << "\t" << tm->asm_dotProdfc.im << std::endl;
     //std::cout << tm->ipp_dotProdfc.re << "\t" << tm->asm_dotProdfc.re << std::endl;
-    ippsDotProd_32fc(tm->ipp_dotProd1, tm->ipp_dotProd2, tm->len, &tm->ipp_dotProdfc);
-    asmDotProd_32fc(tm->asm_dotProd1, tm->asm_dotProd2, tm->len, &tm->asm_dotProdfc);
+    ippsDotProd_32fc(tm->ipp_reim1, tm->ipp_reim2, tm->len, &tm->ipp_dotProdfc);
+    asmDotProd_32fc(tm->asm_reim1, tm->asm_reim2, tm->len, &tm->asm_dotProdfc);
     ASSERT_NEAR(tm->ipp_dotProdfc.im, tm->asm_dotProdfc.im, eps);
     ASSERT_NEAR(tm->ipp_dotProdfc.re, tm->asm_dotProdfc.re, eps);
 }
@@ -1422,15 +1422,15 @@ TEST(PowerTest, PowerSpectr_32fc)
     //{
     //    std::cout << tm->ipp_dst[i] << "\t" << tm->asm_dst[i] << std::endl;
     //}
-    ippsPowerSpectr_32fc(tm->ipp_comp, tm->ipp_dst, tm->len);
-    asmPowerSpectr_32fc(tm->asm_comp, tm->asm_dst, tm->len);
+    ippsPowerSpectr_32fc(tm->ipp_reim1, tm->ipp_vec3, tm->len);
+    asmPowerSpectr_32fc(tm->asm_reim1, tm->asm_vec3, tm->len);
     //for (int i = 0; i < tm->len; i++)
     //{
     //    std::cout << tm->ipp_dst[i] << "\t" << tm->asm_dst[i] << std::endl;
     //}
     for (int i = 0; i < tm->len; i++)
     {
-        ASSERT_NEAR(tm->ipp_dst[i], tm->asm_dst[i], eps);
+        ASSERT_NEAR(tm->ipp_vec3[i], tm->asm_vec3[i], eps);
     }
 
 }
