@@ -1025,7 +1025,7 @@ TEST(SqrTest, Sqr_32f)
     asmSqr_32f(tm->asm_vec1, tm->asm_bufComp, tm->len);
     for (int i = 0; i < tm->len; i++)
     {
-        ASSERT_NEAR(tm->ipp_bufComp[i], tm->asm_bufComp[i], eps);
+        ASSERT_NEAR(tm->ipp_vec1[i], tm->asm_vec1[i], eps);
     }
 }
 //			    MAX TEST FUNC
@@ -1254,7 +1254,7 @@ TEST(MagnitudeTest, Magnitude_32f)
     //    std::cout << tm->ipp_bufComp[i] << "\t" << tm->asm_bufComp[i] << std::endl;
     //}
     ippsMagnitude_32f(tm->ipp_vec1, tm->ipp_dst, tm->ipp_bufComp, tm->len);
-    asmMagnitude_32f(tm->ipp_vec1, tm->ipp_dst, tm->ipp_bufComp, tm->len);
+    asmMagnitude_32f(tm->asm_vec1, tm->asm_dst, tm->asm_bufComp, tm->len);
     //for (int i = 0; i < len; i++)
     //{
     //    std::cout << tm->ipp_bufComp[i] << "\t" << tm->asm_bufComp[i] << std::endl;
@@ -1276,18 +1276,25 @@ TEST(MagnitudeTest, Magnitude_16sc32f)
 ////      PROD TEST FUNC
 TEST(ProdTest, DotProd_32f)
 {
-    //for (int i = 0; i < len; i++)
+    //for (int i = 0; i < tm->len; i++)
     //{
-    //    std::cout << tm->ipp_vec1[i] << "\t" << tm->asm_vec1[i] << std::endl;
+    //    ASSERT_EQ(tm->ipp_vec2[i], tm->asm_vec2[i]);
+    //    //std::cout << tm->ipp_vec1[i] << "\t" << tm->asm_vec1[i] << std::endl;
     //}
-    ippsDotProd_32f(tm->ipp_vec1, tm->ipp_dst, tm->len, &tm->ipp_dotProdf);
-    asmDotProd_32f(tm->asm_vec1, tm->asm_dst, tm->len, &tm->asm_dotProdf);
+    ippsDotProd_32f(tm->ipp_vec2, tm->ipp_vec3, tm->len, &tm->ipp_dotProdf);
+    asmDotProd_32f(tm->asm_vec2, tm->asm_vec3, tm->len, &tm->asm_dotProdf);
     ASSERT_NEAR(tm->ipp_dotProdf, tm->asm_dotProdf, eps);
 }
 TEST(ProdTest, DotProd_32fc)
 {
-    ippsDotProd_32fc(tm->ipp_comp, tm->ipp_dstc, tm->len, &tm->ipp_dotProdfc);
-    asmDotProd_32fc(tm->asm_comp, tm->asm_dstc, tm->len, &tm->asm_dotProdfc);
+    //for (int i = 0; i < tm->len; i++)
+    //{
+    //    ASSERT_EQ(tm->ipp_dotProd2[i].re, tm->asm_dotProd2[i].re);
+    //    ASSERT_EQ(tm->ipp_dotProd2[i].im, tm->asm_dotProd2[i].im);
+    //    //std::cout << tm->ipp_vec1[i] << "\t" << tm->asm_vec1[i] << std::endl;
+    //}
+    ippsDotProd_32fc(tm->ipp_dotProd1, tm->ipp_dotProd2, tm->len, &tm->ipp_dotProdfc);
+    asmDotProd_32fc(tm->asm_dotProd1, tm->asm_dotProd2, tm->len, &tm->asm_dotProdfc);
     ASSERT_NEAR(tm->ipp_dotProdfc.im, tm->asm_dotProdfc.im, eps);
     ASSERT_NEAR(tm->ipp_dotProdfc.re, tm->asm_dotProdfc.re, eps);
 }
@@ -1358,9 +1365,13 @@ TEST(FFTTest, FFTInv_CToC_32fc_I)
 ////      POWER TEST FUNC
 TEST(PowerTest, PowerSpectr_32fc)
 {
+    //for (int i = 0; i < tm->len; i++)
+    //{
+    //    std::cout << tm->ipp_dst[i] << "\t" << tm->asm_dst[i] << std::endl;
+    //}
     ippsPowerSpectr_32fc(tm->ipp_comp, tm->ipp_dst, tm->len);
     asmPowerSpectr_32fc(tm->asm_comp, tm->asm_dst, tm->len);
-    //for (int i = 0; i < len; i++)
+    //for (int i = 0; i < tm->len; i++)
     //{
     //    std::cout << tm->ipp_dst[i] << "\t" << tm->asm_dst[i] << std::endl;
     //}
