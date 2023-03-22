@@ -1193,43 +1193,43 @@ TEST(ConverTest, Convert_16s32f)
         ASSERT_NEAR(tm->ipp_bufComp[i], tm->asm_bufComp[i], eps);
     }
 }
-//TEST(ConverTest, Convert_32f16u_Sfs_Near)
-//{
-//    ippsConvert_32f16u_Sfs(tm->ipp_vec1, tm->ipp_16u1, tm->len, tm->ipp_rndModeNear, tm->scaleFactor);
-//    asmConvert_32f16u_Sfs(tm->asm_vec1, tm->asm_16u1, tm->len, tm->asm_rndModeNear, tm->scaleFactor);
-//    for (int i = 0; i < tm->len; i++)
-//    {
-//        ASSERT_NEAR(tm->ipp_16u1[i], tm->asm_16u1[i], eps);
-//    }
-//}
-//TEST(ConverTest, Convert_32f16s_Sfs_Near)
-//{
-//    ippsConvert_32f16s_Sfs(tm->ipp_vec1, tm->ipp_16s1, tm->len, tm->ipp_rndModeNear, tm->scaleFactor);
-//    asmConvert_32f16s_Sfs(tm->asm_vec1, tm->asm_16s1, tm->len, tm->asm_rndModeNear, tm->scaleFactor);
-//    for (int i = 0; i < tm->len; i++)
-//    {
-//        ASSERT_NEAR(tm->ipp_16s1[i], tm->asm_16s1[i], eps);
-//    }
-//}
-// 
-//TEST(ConverTest, Convert_32f16u_Sfs_Zero)
-//{
-//    ippsConvert_32f16u_Sfs(tm->ipp_vec1, tm->ipp_16u1, tm->len, tm->ipp_rndModeZero, tm->scaleFactor);
-//    asmConvert_32f16u_Sfs(tm->asm_vec1, tm->asm_16u1, tm->len, tm->asm_rndModeZero, tm->scaleFactor);
-//    for (int i = 0; i < tm->len; i++)
-//    {
-//        ASSERT_NEAR(tm->ipp_16u1[i], tm->asm_16u1[i], eps);
-//    }
-//}
-//TEST(ConverTest, Convert_32f16s_Sfs_Zero)
-//{
-//    ippsConvert_32f16s_Sfs(tm->ipp_vec1, tm->ipp_16s1, tm->len, tm->ipp_rndModeZero, tm->scaleFactor);
-//    asmConvert_32f16s_Sfs(tm->asm_vec1, tm->asm_16s1, tm->len, tm->asm_rndModeZero, tm->scaleFactor);
-//    for (int i = 0; i < tm->len; i++)
-//    {
-//        ASSERT_NEAR(tm->ipp_16s1[i], tm->asm_16s1[i], eps);
-//    }
-//}
+TEST(ConverTest, DISABLED_Convert_32f16u_Sfs_Near)
+{
+    ippsConvert_32f16u_Sfs(tm->ipp_vec1, tm->ipp_16u1, tm->len, tm->ipp_rndModeNear, tm->scaleFactor);
+    asmConvert_32f16u_Sfs(tm->asm_vec1, tm->asm_16u1, tm->len, tm->asm_rndModeNear, tm->scaleFactor);
+    for (int i = 0; i < tm->len; i++)
+    {
+        ASSERT_NEAR(tm->ipp_16u1[i], tm->asm_16u1[i], eps);
+    }
+}
+TEST(ConverTest, DISABLED_Convert_32f16s_Sfs_Near)
+{
+    ippsConvert_32f16s_Sfs(tm->ipp_vec1, tm->ipp_16s1, tm->len, tm->ipp_rndModeNear, tm->scaleFactor);
+    asmConvert_32f16s_Sfs(tm->asm_vec1, tm->asm_16s1, tm->len, tm->asm_rndModeNear, tm->scaleFactor);
+    for (int i = 0; i < tm->len; i++)
+    {
+        ASSERT_NEAR(tm->ipp_16s1[i], tm->asm_16s1[i], eps);
+    }
+}
+ 
+TEST(ConverTest, DISABLED_Convert_32f16u_Sfs_Zero)
+{
+    ippsConvert_32f16u_Sfs(tm->ipp_vec1, tm->ipp_16u1, tm->len, tm->ipp_rndModeZero, tm->scaleFactor);
+    asmConvert_32f16u_Sfs(tm->asm_vec1, tm->asm_16u1, tm->len, tm->asm_rndModeZero, tm->scaleFactor);
+    for (int i = 0; i < tm->len; i++)
+    {
+        ASSERT_NEAR(tm->ipp_16u1[i], tm->asm_16u1[i], eps);
+    }
+}
+TEST(ConverTest, DISABLED_Convert_32f16s_Sfs_Zero)
+{
+    ippsConvert_32f16s_Sfs(tm->ipp_vec1, tm->ipp_16s1, tm->len, tm->ipp_rndModeZero, tm->scaleFactor);
+    asmConvert_32f16s_Sfs(tm->asm_vec1, tm->asm_16s1, tm->len, tm->asm_rndModeZero, tm->scaleFactor);
+    for (int i = 0; i < tm->len; i++)
+    {
+        ASSERT_NEAR(tm->ipp_16s1[i], tm->asm_16s1[i], eps);
+    }
+}
 ////      COPY TEST FUNC
 TEST(CopyTest, Copy_32fc)
 {
@@ -1328,13 +1328,14 @@ TEST(ProdTest, DotProd_32f)
     //for (int i = 0; i < tm->len; i++)
     //{
     //    ASSERT_EQ(tm->ipp_vec2[i], tm->asm_vec2[i]);
+    //    ASSERT_EQ(tm->ipp_vec3[i], tm->asm_vec3[i]);
     //    //std::cout << tm->ipp_vec1[i] << "\t" << tm->asm_vec1[i] << std::endl;
     //}
     //std::cout << tm->ipp_dotProdf << "\t" << tm->asm_dotProdf << std::endl;
     ippsDotProd_32f(tm->ipp_vec2, tm->ipp_vec3, tm->len, &tm->ipp_dotProdf);
     asmDotProd_32f(tm->asm_vec2, tm->asm_vec3, tm->len, &tm->asm_dotProdf);
     //std::cout << tm->ipp_dotProdf << "\t" << tm->asm_dotProdf << std::endl;
-    ASSERT_NEAR(tm->ipp_dotProdf, tm->asm_dotProdf, eps);
+    EXPECT_NEAR(tm->ipp_dotProdf, tm->asm_dotProdf, eps);
 }
 TEST(ProdTest, DotProd_32fc)
 {
@@ -1348,8 +1349,8 @@ TEST(ProdTest, DotProd_32fc)
     //std::cout << tm->ipp_dotProdfc.re << "\t" << tm->asm_dotProdfc.re << std::endl;
     ippsDotProd_32fc(tm->ipp_reim1, tm->ipp_reim2, tm->len, &tm->ipp_dotProdfc);
     asmDotProd_32fc(tm->asm_reim1, tm->asm_reim2, tm->len, &tm->asm_dotProdfc);
-    ASSERT_NEAR(tm->ipp_dotProdfc.im, tm->asm_dotProdfc.im, eps);
-    ASSERT_NEAR(tm->ipp_dotProdfc.re, tm->asm_dotProdfc.re, eps);
+    EXPECT_NEAR(tm->ipp_dotProdfc.im, tm->asm_dotProdfc.im, eps);
+    EXPECT_NEAR(tm->ipp_dotProdfc.re, tm->asm_dotProdfc.re, eps);
 }
 ////      POLAR TEST FUNC
 TEST(PolarTest, PolarToCart_32f)
@@ -1578,24 +1579,24 @@ BENCHMARK(asmCplxToReal_16sc_B);
 BENCHMARK(ippConvert_16s32f_B);
 BENCHMARK(asmConvert_16s32f_B);
 
-BENCHMARK(ippConvert_32f16u_Sfs_N);
-BENCHMARK(asmConvert_32f16u_Sfs_N);
-
-BENCHMARK(ippConvert_32f16s_Sfs_N);
-BENCHMARK(asmConvert_32f16s_Sfs_N);
-
-BENCHMARK(ippConvert_32f16u_Sfs_Z);
-BENCHMARK(asmConvert_32f16u_Sfs_Z);
-
-BENCHMARK(ippConvert_32f16s_Sfs_Z);
-BENCHMARK(asmConvert_32f16s_Sfs_Z);
+//BENCHMARK(ippConvert_32f16u_Sfs_N);
+//BENCHMARK(asmConvert_32f16u_Sfs_N);
+//
+//BENCHMARK(ippConvert_32f16s_Sfs_N);
+//BENCHMARK(asmConvert_32f16s_Sfs_N);
+//
+//BENCHMARK(ippConvert_32f16u_Sfs_Z);
+//BENCHMARK(asmConvert_32f16u_Sfs_Z);
+//
+//BENCHMARK(ippConvert_32f16s_Sfs_Z);
+//BENCHMARK(asmConvert_32f16s_Sfs_Z);
 
 //      COPY IPP
 BENCHMARK(ippCopy_32fc_B);
 BENCHMARK(asmCopy_32fc_B);
 
 BENCHMARK(ippCopy_32f_B);
-BENCHMARK(asmCopy_32f_B); // выводит len
+BENCHMARK(asmCopy_32f_B);
 
 //      CONJ IPP
 BENCHMARK(ippConj_32fc_B);
