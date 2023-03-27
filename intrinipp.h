@@ -71,7 +71,6 @@ AsmStatus asmRealToCplx_32f(const Asm32f* pSrcRe, const Asm32f* pSrcIm, Asm32fc*
 AsmStatus asmCplxToReal_16sc(const Asm16sc* pSrc, Asm16s* pDstRe, Asm16s* pDstIm, int len);
 
 // преобразовани€ типов
-/*—ƒ≈Ћј“№ „≈–≈« ƒ–”√”ё «јѕ»—№ ¬ ѕјћя“№*/
 AsmStatus asmConvert_16s32f(const Asm16s* pSrc, Asm32f* pDst, int len); //преобразует signed short в float
 AsmStatus asmConvert_32f16u_Sfs(const Asm32f* pSrc, Asm16u* pDst, int len, AsmRoundMode rndMode, int scaleFactor); //- преобразует float в unsigned short
 AsmStatus asmConvert_32f16s_Sfs(const Asm32f* pSrc, Asm16s* pDst, int len, AsmRoundMode rndMode, int scaleFactor);// - преобразует float в signed short
@@ -93,7 +92,7 @@ AsmStatus asmMagnitude_32f(const Asm32f* pSrcRe, const Asm32f* pSrcIm, Asm32f* p
 AsmStatus asmMagnitude_16sc32f(const Asm16sc* pSrc, Asm32f* pDst, int len);/*—ƒ≈Ћј“№ „≈–≈« ƒ–”√”ё «јѕ»—№ ¬ ѕјћя“№*/
 
 // скал€рное произведение
-/*неточность на при наличие знаков после зап€той*/AsmStatus asmDotProd_32f(const Asm32f* pSrc1, const Asm32f* pSrc2, int len, Asm32f* pDp);
+AsmStatus asmDotProd_32f(const Asm32f* pSrc1, const Asm32f* pSrc2, int len, Asm32f* pDp);
 AsmStatus asmDotProd_32fc(const Asm32fc* pSrc1, const Asm32fc* pSrc2, int len, Asm32fc* pDp);
 
 // пол€рные координаты
@@ -140,3 +139,6 @@ AsmStatus asmPhase_32fc(const Asm32fc* pSrc, Asm32f* pDst, int len);
 // - ABS = _mm_andnot_ps( _mm_set1_ps( -0.0f ), x )
 // - _mm_cvtsi128_si32 - конвертаци€ __m128i в int
 // - _mm_extract_epi32(x, idx) - извлекает элемент idx из массива x
+// - попробовать помен€ть store на stream
+// - помен€ть деление на (1.0f / float_num)
+// - в asmConvert_32f16s_Sfs проверить на сколько вли€ет преобразование scaler в Asm16s на итоговое врем€
