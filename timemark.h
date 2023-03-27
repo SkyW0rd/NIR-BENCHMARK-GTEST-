@@ -209,6 +209,7 @@ public:
 	int ipp_pBufferSize;
 	Ipp32fc* ipp_reim1;
 	Ipp32fc* ipp_reim2;
+	Ipp32fc* ipp_FFTMas;
 	//          FAKE_INIT
 	Asm32fc* asm_comp;
 	Asm32fc* asm_dstc;
@@ -234,6 +235,7 @@ public:
 	int asm_pBufferSize;
 	Asm32fc* asm_reim1;
 	Asm32fc* asm_reim2;
+	Asm32fc* asm_FFTMas;
 	//          IPP_CONST_INIT
 	Ipp32fc ipp_val_c;
 	Ipp32f ipp_val;

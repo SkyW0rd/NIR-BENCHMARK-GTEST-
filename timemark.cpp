@@ -1,10 +1,10 @@
 #include "timemark.h"
 timemark::timemark()
 {
-	len = 1600005;
+	len = 1600000;
 	order = 10;
 	scaleFactor = 0;
-	lenFFT = 1048576;
+	lenFFT = 1024;
 	//          IPP_INIT
 	ipp_comp = new Ipp32fc[len];
 	ipp_dstc = new Ipp32fc[len];
@@ -26,6 +26,7 @@ timemark::timemark()
 	ipp_pBufferSize = 0;
 	ipp_reim1 = new Ipp32fc[len];
 	ipp_reim2 = new Ipp32fc[len];
+	ipp_FFTMas = new Ipp32fc[lenFFT];
 	//          FAKE_INITD
 	asm_comp = new Asm32fc[len];
 	asm_dstc = new Asm32fc[len];
@@ -47,6 +48,7 @@ timemark::timemark()
 	asm_pBufferSize = 0;
 	asm_reim1 = new Asm32fc[len];
 	asm_reim2 = new Asm32fc[len];
+	asm_FFTMas = new Asm32fc[lenFFT];
 	//          IPP_CONST_INIT
 	ipp_val_c = { 3.13931f, 7.1963f };
 	ipp_val = { 3.213141f };
@@ -79,6 +81,13 @@ timemark::timemark()
 	asm_dotProdf = 0;
 	asm_dotProdfc.im = 0;
 	asm_dotProdfc.re = 0;
+	for (int i = 0; i < lenFFT; i++)
+	{
+		ipp_FFTMas[i].re = 4 + i % 16;
+		ipp_FFTMas[i].im = 7 + i % 16;
+		asm_FFTMas[i].re = 4 + i % 16;
+		asm_FFTMas[i].im = 7 + i % 16;
+	}
 	for (int i = 0; i < len; i++)
 	{
 		//          IPP_ADD
@@ -139,7 +148,7 @@ timemark::timemark()
 	asm_pSpecBuffer = (asm_pSpecBufferSize > 0) ? new Asm8u[asm_pSpecBufferSize] : NULL;
 	asm_pBuf = new Asm8u[asm_pBufferSize];
 	ippsFFTInit_C_32fc(ipp_ppFFTSpec, order, IPP_FFT_DIV_INV_BY_N, ippAlgHintNone, ipp_pSpec, ipp_pSpecBuffer);
-	asmFFTInit_C_32fc(asm_ppFFTSpec, order, IPP_FFT_DIV_INV_BY_N, AsmHintAlgorithm::AlgHintNone, asm_pSpec, asm_pSpecBuffer);
+	asmFFTInit_C_32fc(asm_ppFFTSpec, order, ASM_FFT_DIV_INV_BY_N, AsmHintAlgorithm::AlgHintNone, asm_pSpec, asm_pSpecBuffer);
 }
 
 //					ADD IPP
@@ -878,14 +887,14 @@ void timemark::ippFFTFwd_CToC_32fc_I_Bench(benchmark::State& state)
 {
 	while (state.KeepRunning())
 	{
-		benchmark::DoNotOptimize(ippsFFTFwd_CToC_32fc_I(ipp_dstc, *ipp_ppFFTSpec, ipp_pBuf));
+		benchmark::DoNotOptimize(ippsFFTFwd_CToC_32fc_I(ipp_FFTMas, *ipp_ppFFTSpec, ipp_pBuf));
 	}
 }
 void timemark::ippFFTInv_CToC_32fc_I_Bench(benchmark::State& state)
 {
 	while (state.KeepRunning())
 	{
-		benchmark::DoNotOptimize(ippsFFTInv_CToC_32fc_I(ipp_dstc, *ipp_ppFFTSpec, ipp_pBuf));
+		benchmark::DoNotOptimize(ippsFFTInv_CToC_32fc_I(ipp_FFTMas, *ipp_ppFFTSpec, ipp_pBuf));
 	}
 }
 //			FFT FAKE IPP
@@ -908,14 +917,14 @@ void timemark::asmFFTFwd_CToC_32fc_I_Bench(benchmark::State& state)
 {
 	while (state.KeepRunning())
 	{
-		benchmark::DoNotOptimize(asmFFTFwd_CToC_32fc_I(asm_dstc, *asm_ppFFTSpec, asm_pBuf));
+		benchmark::DoNotOptimize(asmFFTFwd_CToC_32fc_I(asm_FFTMas, *asm_ppFFTSpec, asm_pBuf));
 	}
 }
 void timemark::asmFFTInv_CToC_32fc_I_Bench(benchmark::State& state)
 {
 	while (state.KeepRunning())
 	{
-		benchmark::DoNotOptimize(asmFFTInv_CToC_32fc_I(asm_dstc, *asm_ppFFTSpec, asm_pBuf));
+		benchmark::DoNotOptimize(asmFFTInv_CToC_32fc_I(asm_FFTMas, *asm_ppFFTSpec, asm_pBuf));
 	}
 }
 //			POWER IPP
@@ -1003,6 +1012,7 @@ timemark::~timemark()
 	delete[] ipp_ppFFTSpec;
 	delete[] ipp_reim1;
 	delete[] ipp_reim2;
+	delete[] ipp_FFTMas;
 	//			DELETE FAKE IPP
 	delete[] asm_comp;
 	delete[] asm_dstc;
@@ -1024,4 +1034,5 @@ timemark::~timemark()
 	delete[] asm_ppFFTSpec;
 	delete[] asm_reim1;
 	delete[] asm_reim2;
+	delete[] asm_FFTMas;
 }

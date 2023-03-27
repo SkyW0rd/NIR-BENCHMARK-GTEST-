@@ -1398,22 +1398,29 @@ TEST(PolarTest, PolarToCart_32fc)
 //}
 TEST(FFTTest, FFTFwd_CToC_32fc_I)
 {
-    ippsFFTFwd_CToC_32fc_I(tm->ipp_dstc, *tm->ipp_ppFFTSpec, tm->ipp_pBuf);
-    asmFFTFwd_CToC_32fc_I(tm->asm_dstc, *tm->asm_ppFFTSpec, tm->asm_pBuf);
+    ippsFFTFwd_CToC_32fc_I(tm->ipp_FFTMas, *tm->ipp_ppFFTSpec, tm->ipp_pBuf);
+    asmFFTFwd_CToC_32fc_I(tm->asm_FFTMas, *tm->asm_ppFFTSpec, tm->asm_pBuf);
     for (int i = 0; i < tm->lenFFT; i++)
     {
-        ASSERT_NEAR(tm->ipp_dstc[i].im, tm->asm_dstc[i].im, eps);
-        ASSERT_NEAR(tm->ipp_dstc[i].re, tm->asm_dstc[i].re, eps);
+        ASSERT_NEAR(tm->ipp_FFTMas[i].im, tm->asm_FFTMas[i].im, eps);
+        ASSERT_NEAR(tm->ipp_FFTMas[i].re, tm->asm_FFTMas[i].re, eps);
     }
 }
 TEST(FFTTest, FFTInv_CToC_32fc_I)
 {
-    ippsFFTInv_CToC_32fc_I(tm->ipp_dstc, *tm->ipp_ppFFTSpec, tm->ipp_pBuf);
-    asmFFTInv_CToC_32fc_I(tm->asm_dstc, *tm->asm_ppFFTSpec, tm->asm_pBuf);
+    //for (int i = 0; i < tm->lenFFT; i++)
+    //{
+    //    std::cout << i << std::endl;
+    //    ASSERT_NEAR(tm->ipp_dstc[i].im, tm->asm_dstc[i].im, eps);
+    //    ASSERT_NEAR(tm->ipp_dstc[i].re, tm->asm_dstc[i].re, eps);
+    //}
+    ippsFFTInv_CToC_32fc_I(tm->ipp_FFTMas, *tm->ipp_ppFFTSpec, tm->ipp_pBuf);
+    asmFFTInv_CToC_32fc_I(tm->asm_FFTMas, *tm->asm_ppFFTSpec, tm->asm_pBuf);
     for (int i = 0; i < tm->lenFFT; i++)
     {
-        ASSERT_NEAR(tm->ipp_dstc[i].im, tm->asm_dstc[i].im, eps);
-        ASSERT_NEAR(tm->ipp_dstc[i].re, tm->asm_dstc[i].re, eps);
+        //std::cout << i << std::endl;
+        ASSERT_NEAR(tm->ipp_FFTMas[i].im, tm->asm_FFTMas[i].im, eps);
+        ASSERT_NEAR(tm->ipp_FFTMas[i].re, tm->asm_FFTMas[i].re, eps);
     }
 }
 ////      POWER TEST FUNC
