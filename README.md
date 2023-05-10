@@ -11,7 +11,7 @@ git clone --recursive https://github.com/SkyW0rd/NIR-BENCHMARK-GTEST-.git
 ```
 
 <h3>Step 2</h3>
-Download framework <a href="https://github.com/google/googletest">google test</a> and library <a href="https://github.com/google/benchmark">google benchmark</a>:
+Download <a href="https://github.com/google/googletest">google test</a> and <a href="https://github.com/google/benchmark">google benchmark</a>:
 
 ```sh
 git clone --recursive https://github.com/google/benchmark.git
@@ -29,13 +29,13 @@ In the console change to the directory where vcpkg is installed:
 cd "directory vcpkg"
 ```
 <h4>Step 2.3</h4>
-Then enter the command to install the library or framework:
+To install the library:
 
 ```sh
 vcpkg install "name library"
 ```
 <h4>Step 2.4</h4>
-After which you need to go to the directory with <strong>.lib</strong>, <strong>.h</strong> files, links to these repositories need to be transferred to your project. And if there are <strong>.dll</strong> files, then you will need to transfer them to the project for the program to work correctly. See illustrations below.
+After which you need to go to the directory with <strong>.lib</strong>, <strong>.h</strong> files, links to these repositories need to be transferred to your project. And add the files <strong>.dll</strong> to the project, then you will need to transfer them to the project for the program to work correctly. See illustrations below.
 <div id="header" align="center">
   <img src="https://user-images.githubusercontent.com/101702769/235764426-fa1ec180-92c3-4748-9d27-4dbe8bb0cb17.png" width="950"/><br><br>
 </div>
